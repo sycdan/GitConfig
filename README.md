@@ -27,17 +27,24 @@ chmod +x ~/code/GitConfig/hooks/pre-commit
 Any staged files will be formatted based on their extension:
 
 - `.cs` - [CSharpier](https://csharpier.com/)
+- `.py` - [autopep8](https://pypi.org/project/autopep8/)
 
 Formatting can be disabled for specific file extensions by adding them to an environment variable:
 
 ```bash
-export GITCONFIG_SKIPFORMAT=cs,md,yaml
+export GITCONFIG_SKIPFORMAT=cs,py
 ```
+
+If you run a code formatter regularly during development (for example using format-on-save), create a symlink to the config file in the folder where your repos are stored, or your home folder.
 
 ### CSharpier
 
-If you run `csharpier` regularly during development (for example using format-on-save), create a symlink to the config file in the folder where your repos are stored, e.g.:
-
 ```bash
 ln ~/code/GitConfig/hooks/.csharpierrc.json ~/code
+```
+
+### autopep8
+
+```bash
+ln ~/code/GitConfig/hooks/.pep8 ~
 ```

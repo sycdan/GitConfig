@@ -27,6 +27,17 @@ if [[ -z $skipformat_cs ]]; then
 	fi
 fi
 
+# If PY formatting is enabled, check if autopep8 is installed
+if [[ -z $skipformat_py ]]; then
+	# Attempt to get the version of autopep8, swallowing any output
+	python -m autopep8 --version &> /dev/null
+	# Check if the above command failed (indicating the tool is not installed)
+	if [ $? -ne 0 ]; then
+		echo "Installing autopep8"
+		python -m pip install autopep8
+	fi
+fi
+
 # Iterate over all staged files
 for file in $files; do
 	# If the file was deleted, skip it
