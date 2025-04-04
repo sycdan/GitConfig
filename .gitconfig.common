@@ -1,7 +1,9 @@
 [user]
 	name = Dan Stace
+
 [push]
 	default = simple
+
 [alias]
 	aa = add --all
 	ad = add
@@ -29,8 +31,7 @@
 	rbc = rebase --continue
 	rbi = rebase --interactive
 	root = rebase --interactive --root
-	s = status -s
-	st = status
+	ss = status -s
 
 	# Eric's magical commands
   brexists = "!f() { git show-ref --verify --quiet refs/heads/$1; }; f"
@@ -138,7 +139,11 @@
   # aliases for working with gitlab
   glcompare = "!f() { B=${1}; A=${2-$(git brname)}; $(git config web.open) \"https://$(git remote -v | grep '^origin\\>.*(push)' | perl -pe 's|.*@(.*):(.*)\\.git .*|\\1/\\2|')/compare/$B...$A\"; }; f"
   glpullrequest = "!f() { set -e; if [ $# -lt 1 ]; then echo \"abort: target branch name required\"; return 1; fi; B=${1}; A=${2-$(git brname)}; echo \"creating gitlab pull request $A -> $B...\"; if ! $(git pushed $A) ; then git push ; fi; $(git config web.open) \"https://$(git remote -v | grep '^origin\\>.*(push)' | perl -pe 's|.*@(.*):(.*)\\.git .*|\\1/\\2|')/merge_requests/new?merge_request[source_branch]=$A&merge_request[target_branch]=$B&merge_request[title]=$A\"; }; f"
+
+	# mac
 	azurepullrequest = "!f() { B=${1}; A=${2-$(git brname)}; if ! $(git pushed $A) ; then git push ; fi; $(git config web.open) \"$(git config azure.url)/pullrequestcreate?sourceRef=$A&targetRef=$B&sourceRepositoryId=$(git config azure.repoid)&targetRepositoryId=$(git config azure.repoid)\"; }; f"
+	# wsl
+	azurepullrequest = "!f() { B=${1}; A=${2-$(git brname)}; if [ \"$(git show-ref refs/heads/$A | cut '-d ' -f1)\" != \"$(git show-ref refs/remotes/origin/$A | cut '-d ' -f1)\" ]; then git push; fi; $(git config web.open) \"$(git config azure.url)/pullrequestcreate?sourceRef=$A&targetRef=$B&sourceRepositoryId=$(git config azure.repoid)&targetRepositoryId=$(git config azure.repoid)\"; }; f"
 
 # [branch]
 #   autosetupmerge = true
@@ -196,11 +201,15 @@
 # [rerere]
 #   enabled = true
 
-# [web]
-#   open = xdg-open
+[web]
+	# mac
+	# open = xdg-open
+	# sudo apt install wslu
+	open = wslview
 
 [color]
 	ui = auto
+
 [core]
 	filemode = false
 	autocrlf = false
@@ -208,21 +217,30 @@
 	editor = code --wait
 	hooksPath = ~/.config/git/hooks
 	excludesfile = ~/.config/git/.gitignore_global
+
 [remote "origin"]
 	prune = true
+
 [fetch]
 	prune = true
+
 [pull]
 	rebase = true
+
 [gitflow]
 	multi-hotfix = true
+
 [init]
 	defaultBranch = main
+
 [diff]
 	tool = vscode
+
 [difftool "vscode"]
 	cmd = code --wait --diff $LOCAL $REMOTE
+
 [merge]
 	tool = vscode
+
 [mergetool "vscode"]
 	cmd = code --wait $MERGED
